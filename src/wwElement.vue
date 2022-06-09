@@ -1,14 +1,13 @@
 <template>
   <div
-    ref="pdf"
     class="ww-pdf-viewer"
     :class="{ editing: isEditing }"
-    :key="componentKey"
-  />
+    ref="pdfContainer"
+  ></div>
 </template>
 
 <script>
-import PDFObject from "pdfobject";
+import PDFObject from "PDFObject";
 
 export default {
   props: {
@@ -17,12 +16,18 @@ export default {
     wwEditorState: { type: Object, required: true },
     /* wwEditor:end */
   },
+  data() {
+    return {
+      elementHeight: 0,
+      elementWidth: 0,
+      resizeObserver: null,
+    };
+  },
   watch: {
     content: {
       deep: true,
       handler() {
         this.init();
-        console.log("toto");
       },
     },
   },
@@ -38,21 +43,26 @@ export default {
     },
   },
   methods: {
-    init() {
-      console.log("init");
-      console.log(this.content.defaultZoom);
-      const container = this.$refs.pdf;
-      const options = {
-        pdfOpenParams: {
-          zoom: `${this.content.defaultZoom}`,
-          page: `${this.content.defaultPage}`,
-        },
-      };
-      PDFObject.embed(this.content.file, container, options);
+    initObserver() {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.init();
+      });
+
+      this.resizeObserver.observe(this.$el);
     },
+    clearObserver() {
+      this.resizeObserver.disconnect();
+    },
+    init() {
+      PDFObject.embed(this.content.pdf, this.$refs.pdfContainer);
+    },
+  },
+  beforeUnmount() {
+    this.resizeObserver.disconnect();
   },
   mounted() {
     this.init();
+    this.initObserver();
   },
 };
 </script>
@@ -61,6 +71,7 @@ export default {
 .ww-pdf-viewer {
   width: inherit;
   height: inherit;
+
   &.editing {
     pointer-events: none;
   }
