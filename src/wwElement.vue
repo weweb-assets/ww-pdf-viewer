@@ -18,8 +18,6 @@ export default {
   },
   data() {
     return {
-      elementHeight: 0,
-      elementWidth: 0,
       resizeObserver: null,
     };
   },
