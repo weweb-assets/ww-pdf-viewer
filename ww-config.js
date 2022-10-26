@@ -3,7 +3,7 @@ export default {
     label: {
       en: "PDF viewer",
     },
-    icon: 'page',
+    icon: 'document-report',
   },
   properties: {
     pdf: {
