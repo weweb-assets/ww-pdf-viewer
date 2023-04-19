@@ -67,9 +67,6 @@ export default {
 
 <style lang="scss" scoped>
 .ww-pdf-viewer {
-  width: inherit;
-  height: inherit;
-
   &.editing {
     pointer-events: none;
   }
